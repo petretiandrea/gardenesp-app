@@ -3,12 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:gardenesp/blocs/authentication/authentication_bloc.dart';
-import 'package:gardenesp/blocs/login/login_cubit.dart';
+import 'package:gardenesp/blocs/login/login_form_cubit.dart';
 import 'package:gardenesp/extensions.dart';
 import 'package:gardenesp/repository/UserRepository.dart';
-import 'package:gardenesp/ui/home_screen.dart';
-import 'package:gardenesp/ui/login/login_screen.dart';
-import 'package:gardenesp/ui/splash_screen.dart';
+import 'package:gardenesp/routes.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,7 +23,7 @@ class Gardensp extends StatefulWidget {
 class _GardenspState extends State<Gardensp> {
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
 
-  _GardenspState() {}
+  _GardenspState();
 
   @override
   Widget build(BuildContext context) {
@@ -33,66 +31,70 @@ class _GardenspState extends State<Gardensp> {
       future: _initialization,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return _buildMaterialApp(Container(
-            child: Text("Error: ${snapshot.error.toString()}"),
-          ));
+          return Container(child: Text("Error: ${snapshot.error.toString()}"));
         }
         if (snapshot.connectionState == ConnectionState.done) {
-          return _buildMainApp();
+          return _buildApp();
         }
-        return _buildMaterialApp(SplashScreen());
+        return Container(child: CircularProgressIndicator());
       },
     );
   }
 
-  Widget _buildMaterialApp(Widget home) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      supportedLocales: [
-        Locale("en", "US"),
-      ],
-      localizationsDelegates: [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: home,
-    );
-  }
+  final _navigatorKey = GlobalKey<NavigatorState>();
+  NavigatorState get _navigator => _navigatorKey.currentState!;
 
-  Widget _buildMainApp() {
-    final _userRepository = UserRepository();
-    final _authenticationBloc = AuthenticationBloc(_userRepository);
-
-    _authenticationBloc.add(AppStarted());
-
-    return _buildMaterialApp(RepositoryProvider.value(
-      value: _userRepository,
-      child: MultiBlocProvider(
-        providers: [
-          BlocProvider(create: (_) => _authenticationBloc),
-          BlocProvider(create: (_) => LoginCubit(_userRepository)),
-        ],
-        child: BlocBuilder(
-          bloc: _authenticationBloc,
-          builder: (context, state) {
-            if (state is Uninitialized) {
-              return SplashScreen();
-            }
-            if (state is Unauthenticated) {
-              return LoginScreen();
-            }
-            if (state is Authenticated) {
-              print(state.user);
-              return HomeScreen(name: state.user.name);
-            }
-            return Container();
-          },
+  Widget _buildApp() {
+    final userRepository = UserRepository();
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+            create: (_) =>
+                AuthenticationBloc(userRepository)..add(AppStarted())),
+        BlocProvider(
+          create: (context) => LoginFormCubit(
+            userRepository,
+            context.read<AuthenticationBloc>(),
+          ),
         ),
+      ],
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        supportedLocales: [
+          Locale("en", "US"),
+        ],
+        localizationsDelegates: [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        navigatorKey: _navigatorKey,
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        routes: Routes.createRouter(),
+        initialRoute: Routes.SPLASH_SCREEN,
+        builder: (context, child) {
+          return BlocListener<AuthenticationBloc, AuthenticationState>(
+            listener: (context, state) {
+              if (state is Unauthenticated) {
+                _navigator.pushNamedAndRemoveUntil(
+                    Routes.LOGIN_SCREEN, (route) => false);
+              }
+              if (state is Authenticated) {
+                _navigator.pushNamedAndRemoveUntil(
+                  Routes.HOME_SCREEN,
+                  (route) => false,
+                  arguments: {
+                    'user': state.user.name,
+                  },
+                );
+              }
+            },
+            child: child,
+          );
+        },
       ),
-    ));
+    );
   }
 }

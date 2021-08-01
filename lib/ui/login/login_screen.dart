@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gardenesp/blocs/login/login_cubit.dart';
+import 'package:gardenesp/blocs/login/form_submission_status.dart';
 import 'package:gardenesp/blocs/login/login_form_cubit.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -8,17 +8,14 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<LoginCubit, LoginState>(
+    return BlocListener<LoginFormCubit, LoginFormState>(
       listener: (context, state) {
-        if (state.isFailure) {
+        if (state.formState is FormSubmissionError) {
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
             ..showSnackBar(
               SnackBar(content: Text("Authentication Failure")),
             );
-        }
-        if (state.isSuccess) {
-          Navigator.of(context).pop();
         }
       },
       child: Scaffold(
@@ -79,13 +76,15 @@ class LoginScreen extends StatelessWidget {
   }
 
   Widget _loginButton(BuildContext context) {
-    return BlocBuilder<LoginCubit, LoginState>(
+    return BlocBuilder<LoginFormCubit, LoginFormState>(
       builder: (context, state) {
-        return ElevatedButton(
-          onPressed: () =>
-              context.read<LoginFormCubit>().loginWithCredentials(),
-          child: Text("Login"),
-        );
+        return state.formState is FormSubmissionLoading
+            ? CircularProgressIndicator()
+            : ElevatedButton(
+                onPressed: () =>
+                    context.read<LoginFormCubit>().loginWithCredentials(),
+                child: Text("Login"),
+              );
       },
     );
   }
