@@ -1,8 +1,9 @@
 import 'dart:collection';
 
 import 'package:flutter/widgets.dart';
-import 'package:gardenesp/ui/home_screen.dart';
+import 'package:gardenesp/ui/dashboard/home_screen.dart';
 import 'package:gardenesp/ui/login/login_screen.dart';
+import 'package:gardenesp/ui/profile/profile_detail_edit_screen.dart';
 import 'package:gardenesp/ui/splash_screen.dart';
 
 typedef RouteBuilder = Widget Function(Map<String, String> params);
@@ -11,6 +12,7 @@ class Routes {
   static const SPLASH_SCREEN = "/splash";
   static const LOGIN_SCREEN = "/login";
   static const HOME_SCREEN = "/home";
+  static const PROFILE_DETAIL_EDIT = "/profile_detail_edit";
 
   static final _router = _Router();
 
@@ -30,6 +32,11 @@ class Routes {
     _router.registerRoute(
       path: LOGIN_SCREEN,
       builder: (params) => LoginScreen(),
+    );
+
+    _router.registerRoute(
+      path: PROFILE_DETAIL_EDIT,
+      builder: (params) => ProfileDetailEditScreen(),
     );
 
     return _router.createRoutes();

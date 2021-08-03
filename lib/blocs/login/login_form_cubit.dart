@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:gardenesp/blocs/authentication/authentication_bloc.dart';
 import 'package:gardenesp/blocs/login/form_submission_status.dart';
-import 'package:gardenesp/repository/UserRepository.dart';
+import 'package:gardenesp/repository/user_repository.dart';
 
 part 'login_form_state.dart';
 

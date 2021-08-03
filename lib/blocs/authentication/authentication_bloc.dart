@@ -1,8 +1,9 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:gardenesp/repository/UserRepository.dart';
+import 'package:gardenesp/repository/user_repository.dart';
 import 'package:meta/meta.dart';
 
 part 'authentication_event.dart';
