@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:gardenesp/blocs/resource/resource_cubit.dart';
-import 'package:gardenesp/model/Garden.dart';
+import 'package:gardenesp/model/garden.dart';
 import 'package:gardenesp/repository/garden_repository.dart';
 import 'package:gardenesp/repository/user_repository.dart';
 import 'package:meta/meta.dart';
@@ -15,7 +15,7 @@ class GardenCubit extends ResourceCubit<List<Garden>> {
 
   GardenCubit(this.gardenRepository, this.userRepository) : super();
 
-  void loadGardensOf(final String userId) async {
+  Future<void> loadGardensOf(final String userId) async {
     print("loadGarden");
     return fetchResource(() {
       return gardenRepository.retrieveGardens(userId).then(
@@ -25,11 +25,11 @@ class GardenCubit extends ResourceCubit<List<Garden>> {
     });
   }
 
-  void loadGardens() async {
+  Future<void> loadGardens() async {
     final isLogged = await userRepository.isLoggedIn();
     final loggedUser = await userRepository.currentUser();
     if (isLogged) {
-      return loadGardensOf(loggedUser.uid);
+      return await loadGardensOf(loggedUser.uid);
     } else {
       emit(ResourceError("User not logged"));
     }

@@ -1,8 +1,9 @@
 import 'dart:collection';
 
 import 'package:flutter/widgets.dart';
-import 'package:gardenesp/ui/dashboard/home_screen.dart';
+import 'package:gardenesp/ui/gardens/garden_create_edit.dart';
 import 'package:gardenesp/ui/login/login_screen.dart';
+import 'package:gardenesp/ui/main_screen.dart';
 import 'package:gardenesp/ui/profile/profile_detail_edit_screen.dart';
 import 'package:gardenesp/ui/splash_screen.dart';
 
@@ -12,6 +13,9 @@ class Routes {
   static const SPLASH_SCREEN = "/splash";
   static const LOGIN_SCREEN = "/login";
   static const HOME_SCREEN = "/home";
+  static const MAIN_SCREEN = "/main";
+  static const SCHEDULE_SCREEN = "/schedule";
+  static const GARDEN_CREATE_EDIT_SCREEN = "/garden_create_edit";
   static const PROFILE_DETAIL_EDIT = "/profile_detail_edit";
 
   static final _router = _Router();
@@ -23,13 +27,6 @@ class Routes {
     );
 
     _router.registerRoute(
-      path: HOME_SCREEN,
-      builder: (params) {
-        return HomeScreen(name: params['user'] ?? "");
-      },
-    );
-
-    _router.registerRoute(
       path: LOGIN_SCREEN,
       builder: (params) => LoginScreen(),
     );
@@ -37,6 +34,16 @@ class Routes {
     _router.registerRoute(
       path: PROFILE_DETAIL_EDIT,
       builder: (params) => ProfileDetailEditScreen(),
+    );
+
+    _router.registerRoute(
+      path: MAIN_SCREEN,
+      builder: (params) => MainScreen(),
+    );
+
+    _router.registerRoute(
+      path: GARDEN_CREATE_EDIT_SCREEN,
+      builder: (params) => GardenCreateEditScreen(),
     );
 
     return _router.createRoutes();

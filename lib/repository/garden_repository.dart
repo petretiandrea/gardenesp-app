@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:firebase_database/firebase_database.dart';
-import 'package:gardenesp/model/Garden.dart';
+import 'package:gardenesp/model/garden.dart';
 
 class GardenRepository {
   final FirebaseDatabase _database;
@@ -26,10 +26,23 @@ class GardenRepository {
     return futureResult.future;
   }
 
+  Future<Garden> createGarden(String userId, Garden garden) {
+    final futureResult = Completer<Garden>();
+    final newGardenRef = _databaseReference?.child("$userId").push();
+    print(newGardenRef?.key);
+    newGardenRef?.set(garden.toMap()).then(
+          (value) => futureResult.complete(garden),
+          onError: (error) => futureResult.completeError(error),
+        );
+    return futureResult.future;
+  }
+
   List<T> _parseSnapshotList<T>(
       DataSnapshot snapshot, T Function(Map<String, dynamic>) map) {
-    return List<dynamic>.from(snapshot.value ?? List.empty())
-        .map((e) => map(Map<String, dynamic>.from(e)))
+    return Map<String, dynamic>.from(snapshot.value ?? Map())
+        .entries
+        .map((e) => map(Map<String, dynamic>.from(e.value)
+          ..putIfAbsent("identifier", () => e.key)))
         .toList();
   }
 }

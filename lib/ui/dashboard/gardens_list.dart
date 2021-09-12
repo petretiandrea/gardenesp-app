@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:gardenesp/model/Garden.dart';
+import 'package:gardenesp/model/garden.dart';
 
 class GardensList extends StatefulWidget {
   final List<Garden> gardens;

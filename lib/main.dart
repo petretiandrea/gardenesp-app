@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:gardenesp/blocs/authentication/authentication_bloc.dart';
 import 'package:gardenesp/blocs/login/login_form_cubit.dart';
-import 'package:gardenesp/extensions.dart';
+import 'package:gardenesp/generated/l10n.dart';
 import 'package:gardenesp/repository/garden_repository.dart';
 import 'package:gardenesp/repository/user_repository.dart';
 import 'package:gardenesp/routes.dart';
@@ -66,10 +66,9 @@ class _GardenspState extends State<Gardensp> {
         ],
         child: MaterialApp(
           title: 'Flutter Demo',
-          supportedLocales: [
-            Locale("en", "US"),
-          ],
+          supportedLocales: S.delegate.supportedLocales,
           localizationsDelegates: [
+            S.delegate,
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
@@ -85,15 +84,14 @@ class _GardenspState extends State<Gardensp> {
               listener: (context, state) {
                 if (state is Unauthenticated) {
                   _navigator.pushNamedAndRemoveUntil(
-                      Routes.LOGIN_SCREEN, (route) => false);
+                    Routes.LOGIN_SCREEN,
+                    (route) => false,
+                  );
                 }
                 if (state is Authenticated) {
                   _navigator.pushNamedAndRemoveUntil(
-                    Routes.HOME_SCREEN,
+                    Routes.MAIN_SCREEN,
                     (route) => false,
-                    arguments: {
-                      'user': state.user.name,
-                    },
                   );
                 }
               },
