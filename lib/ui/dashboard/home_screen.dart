@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gardenesp/blocs/forecast/forecast_cubit.dart';
 import 'package:gardenesp/blocs/garden/garden_cubit.dart';
 import 'package:gardenesp/blocs/resource/resource_cubit.dart';
 import 'package:gardenesp/model/garden.dart';
 import 'package:gardenesp/repository/garden_repository.dart';
 import 'package:gardenesp/repository/user_repository.dart';
 import 'package:gardenesp/routes.dart';
+import 'package:gardenesp/service/weather/weather_service.dart';
 import 'package:gardenesp/ui/dashboard/gardens_list.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -28,10 +30,19 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       body: SafeArea(
-        child: BlocProvider(
-          create: (ctx) => GardenCubit(
-              ctx.read<GardenRepository>(), ctx.read<UserRepository>())
-            ..loadGardens(),
+        child: MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (ctx) => GardenCubit(
+                  ctx.read<GardenRepository>(), ctx.read<UserRepository>())
+                ..loadGardens(),
+            ),
+            BlocProvider(
+              create: (ctx) => ForecastCubit(
+                weatherService: ctx.read<WeatherService>(),
+              )..loadForecast("Sterpeti, Montefelcino, PU"),
+            ),
+          ],
           child: _buildGardenList(),
         ),
       ),
@@ -46,6 +57,9 @@ class HomeScreen extends StatelessWidget {
             child: GardensList(
               gardens: state.value,
               onItemSelected: (selectedItem) {
+                Navigator.of(context).pushNamed(
+                    Routes.GARDEN_CREATE_EDIT_SCREEN,
+                    arguments: {'gardenId': selectedItem.identifier});
                 print("Item $selectedItem");
               },
             ),

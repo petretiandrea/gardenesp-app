@@ -86,13 +86,13 @@ class _MainScreenState extends State<MainScreen> {
         ? CircleAvatar(
             radius: 14,
             child: Image(
-              image: Image.network(user.photoURL).image,
+              image: Image.network(user.photoURL ?? "").image,
             ),
           )
         : CircleAvatar(
             radius: 14,
             child: Text(
-              user.email[0].toUpperCase(),
+              (user.name.isNotEmpty) ? user.name[0].toUpperCase() : user.name,
             ),
           );
   }

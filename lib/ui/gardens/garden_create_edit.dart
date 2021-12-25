@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gardenesp/blocs/garden/garden_editor_cubit.dart';
 import 'package:gardenesp/blocs/login/form_submission_status.dart';
+import 'package:gardenesp/list_extensions.dart';
 import 'package:gardenesp/repository/garden_repository.dart';
 import 'package:gardenesp/repository/user_repository.dart';
 
@@ -58,7 +59,10 @@ class _GardenCreateEditScreenState extends State<GardenCreateEditScreen> {
                           _nameController.text, _descriptionController.text);
                     else
                       cubit.submitCreation(
-                          _nameController.text, _descriptionController.text);
+                        _nameController.text,
+                        _descriptionController.text,
+                        emptyList(),
+                      );
                   },
                   icon: const Icon(Icons.check),
                 )

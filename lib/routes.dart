@@ -18,9 +18,9 @@ class Routes {
   static const GARDEN_CREATE_EDIT_SCREEN = "/garden_create_edit";
   static const PROFILE_DETAIL_EDIT = "/profile_detail_edit";
 
-  static final _router = _Router();
+  static final _router = Router();
 
-  static Map<String, WidgetBuilder> createRouter() {
+  static Map<String, WidgetBuilder> createRoutes() {
     _router.registerRoute(
       path: SPLASH_SCREEN,
       builder: (_) => SplashScreen(),
@@ -43,14 +43,16 @@ class Routes {
 
     _router.registerRoute(
       path: GARDEN_CREATE_EDIT_SCREEN,
-      builder: (params) => GardenCreateEditScreen(),
+      builder: (params) => GardenCreateEditScreen(
+        gardenId: params['gardenId'],
+      ),
     );
 
     return _router.createRoutes();
   }
 }
 
-class _Router {
+class Router {
   final Map<String, RouteBuilder> _routes = HashMap();
 
   void registerRoute({

@@ -1,6 +1,9 @@
 import 'package:bloc/bloc.dart';
+import 'package:dartz/dartz.dart';
 import 'package:gardenesp/blocs/login/form_submission_status.dart';
+import 'package:gardenesp/list_extensions.dart';
 import 'package:gardenesp/model/garden.dart';
+import 'package:gardenesp/model/sector.dart';
 import 'package:gardenesp/repository/garden_repository.dart';
 import 'package:gardenesp/repository/user_repository.dart';
 import 'package:meta/meta.dart';
@@ -24,7 +27,7 @@ class GardenEditorCubit extends Cubit<GardenEditorState> {
         identifier: gardenId ?? "",
         name: name,
         description: description,
-        lastUpdateTime: 0,
+        sectors: emptyList(),
         image: "",
       );
       await _gardenRepository.createGarden(userId, newGarden);
@@ -40,7 +43,11 @@ class GardenEditorCubit extends Cubit<GardenEditorState> {
     }
   }
 
-  void submitCreation(String name, String description) async {
+  void submitCreation(
+    String name,
+    String description,
+    IList<Sector> sectors,
+  ) async {
     emit(state.copyWith(formStatus: FormSubmissionLoading()));
     try {
       final userId = (await _userRepository.currentUser()).uid;
@@ -48,7 +55,7 @@ class GardenEditorCubit extends Cubit<GardenEditorState> {
         identifier: "",
         name: name,
         description: description,
-        lastUpdateTime: 0, // means never
+        sectors: sectors,
         image: "",
       );
       await _gardenRepository.createGarden(userId, newGarden);

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:firebase_database/firebase_database.dart';
+import 'package:gardenesp/extensions.dart';
 import 'package:gardenesp/model/garden.dart';
 
 class GardenRepository {
@@ -17,7 +18,8 @@ class GardenRepository {
     _databaseReference
         ?.child("$userId")
         .once()
-        .then((snap) => _parseSnapshotList(snap, (map) => Garden.fromMap(map)))
+        .then((snap) =>
+            _parseSnapshotList(snap.snapshot, (map) => Garden.fromMap(map)))
         .then(futureResult.complete)
         .catchError((error) {
       futureResult.completeError(error);
@@ -39,7 +41,8 @@ class GardenRepository {
 
   List<T> _parseSnapshotList<T>(
       DataSnapshot snapshot, T Function(Map<String, dynamic>) map) {
-    return Map<String, dynamic>.from(snapshot.value ?? Map())
+    return Map<String, dynamic>.from(
+            snapshot.value.safeAs<Map<String, dynamic>>() ?? Map())
         .entries
         .map((e) => map(Map<String, dynamic>.from(e.value)
           ..putIfAbsent("identifier", () => e.key)))
