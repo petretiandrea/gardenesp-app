@@ -92,6 +92,20 @@ class _GardenspState extends State<Gardensp> {
           navigatorKey: _navigatorKey,
           theme: ThemeData(
             primarySwatch: Colors.blue,
+            textTheme: const TextTheme(
+              headline2: TextStyle(
+                  fontSize: 30,
+                  fontFamily: "Roboto",
+                  fontWeight: FontWeight.w900),
+              bodyText1: TextStyle(
+                  fontSize: 12,
+                  fontFamily: "Roboto",
+                  fontWeight: FontWeight.w500),
+              bodyText2: TextStyle(
+                  fontSize: 12,
+                  fontFamily: "Roboto",
+                  fontWeight: FontWeight.w300),
+            ),
           ),
           routes: Routes.createRoutes(),
           initialRoute: Routes.SPLASH_SCREEN,

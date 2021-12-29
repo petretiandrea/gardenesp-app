@@ -6,6 +6,7 @@ import 'package:gardenesp/blocs/forecast/forecast_cubit.dart';
 import 'package:gardenesp/blocs/resource/resource_cubit.dart';
 import 'package:gardenesp/model/forecast/forecast.dart';
 import 'package:gardenesp/model/forecast/location.dart' as ForecastLocation;
+import 'package:gardenesp/ui/widget/forecast_card.dart';
 import 'package:location/location.dart';
 
 class ForecastWidget extends StatelessWidget {
@@ -21,22 +22,12 @@ class ForecastWidget extends StatelessWidget {
         return BlocBuilder<ForecastCubit, ResourceState<Forecast>>(
           builder: (context, state) {
             if (state is ResourceSuccess<Forecast>) {
-              return Card(
-                elevation: 1,
-                shape: RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadiusDirectional.all(Radius.circular(10)),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.all(8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Text(state.value.current.condition.toString()),
-                      Text(state.value.current.date.toString())
-                    ],
-                  ),
-                ),
+              return ForecastCard.fromWeather(
+                weather: state.value.current,
+                locationName: "Sterpeti, Montefelcino",
+                onRefresh: () {
+                  ctx.read<ForecastCubit>().refreshForecast();
+                },
               );
             } else {
               return Text("Weather loading...");
