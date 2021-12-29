@@ -13,6 +13,7 @@ import 'package:gardenesp/repository/user_repository.dart';
 import 'package:gardenesp/routes.dart';
 import 'package:gardenesp/service/weather/weather_api.dart';
 import 'package:gardenesp/service/weather/weather_service.dart';
+import 'package:gardenesp/theme.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -90,23 +91,7 @@ class _GardenspState extends State<Gardensp> {
             GlobalCupertinoLocalizations.delegate,
           ],
           navigatorKey: _navigatorKey,
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
-            textTheme: const TextTheme(
-              headline2: TextStyle(
-                  fontSize: 30,
-                  fontFamily: "Roboto",
-                  fontWeight: FontWeight.w900),
-              bodyText1: TextStyle(
-                  fontSize: 12,
-                  fontFamily: "Roboto",
-                  fontWeight: FontWeight.w500),
-              bodyText2: TextStyle(
-                  fontSize: 12,
-                  fontFamily: "Roboto",
-                  fontWeight: FontWeight.w300),
-            ),
-          ),
+          theme: GardenEspTheme.dark(),
           routes: Routes.createRoutes(),
           initialRoute: Routes.SPLASH_SCREEN,
           builder: (context, child) {

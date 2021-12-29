@@ -8,7 +8,6 @@ import 'package:gardenesp/repository/garden_repository.dart';
 import 'package:gardenesp/repository/user_repository.dart';
 import 'package:gardenesp/routes.dart';
 import 'package:gardenesp/service/weather/weather_service.dart';
-import 'package:gardenesp/ui/dashboard/gardens_list.dart';
 import 'package:gardenesp/ui/forecast/forecast_widget.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -58,15 +57,15 @@ class HomeScreen extends StatelessWidget {
             child: Column(
               children: [
                 ForecastWidget(),
-                GardensList(
-                  gardens: state.value,
-                  onItemSelected: (selectedItem) {
-                    Navigator.of(context).pushNamed(
-                        Routes.GARDEN_CREATE_EDIT_SCREEN,
-                        arguments: {'gardenId': selectedItem.identifier});
-                    print("Item $selectedItem");
-                  },
-                )
+                // GardensList(
+                //   gardens: state.value,
+                //   onItemSelected: (selectedItem) {
+                //     Navigator.of(context).pushNamed(
+                //         Routes.GARDEN_CREATE_EDIT_SCREEN,
+                //         arguments: {'gardenId': selectedItem.identifier});
+                //     print("Item $selectedItem");
+                //   },
+                // )
               ],
             ),
             onRefresh: () => context.read<GardenCubit>().loadGardens(),

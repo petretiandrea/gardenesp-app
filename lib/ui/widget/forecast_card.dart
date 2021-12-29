@@ -3,6 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gardenesp/model/forecast/weather.dart';
+import 'package:gardenesp/string_extensions.dart';
 import 'package:intl/intl.dart';
 
 extension WeatherUIAdapter on Weather {
@@ -68,7 +69,7 @@ class ForecastCard extends StatelessWidget {
     required Weather weather,
     required this.locationName,
     required this.onRefresh,
-  })  : degree = weather.temp,
+  })  : degree = weather.temperature,
         weatherCondition = weather.getLocalizedCondition(),
         weatherConditionImage = weather.getConditionImage(),
         dayHour = DateFormat(_FORMAT_DAY_HOUR).format(weather.date);
@@ -126,7 +127,7 @@ class ForecastCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              degree.toStringAsFixed(1),
+              "${degree.toStringAsFixed(1)}\u00B0",
               style: Theme.of(context).textTheme.headline2,
             ),
             SizedBox(height: 8),
@@ -139,7 +140,7 @@ class ForecastCard extends StatelessWidget {
                 ),
                 SizedBox(height: 6),
                 Text(
-                  "$dayHour, $weatherCondition",
+                  "$dayHour, $weatherCondition".capitalize(),
                   style: Theme.of(context).textTheme.bodyText2,
                 )
               ],
@@ -156,7 +157,7 @@ class ForecastCard extends StatelessWidget {
         ...weathers.map((weatherDay) => ForecastDay(
               day: "Mar",
               weatherConditionImage: weatherDay.getConditionImage(),
-              temperature: weatherDay.temp,
+              temperature: weatherDay.temperature,
             ))
       ],
     );
@@ -196,36 +197,4 @@ class ForecastDay extends StatelessWidget {
       ],
     );
   }
-}
-
-void main() {
-  runApp(
-    MaterialApp(
-      theme: ThemeData(
-          textTheme: const TextTheme(
-        headline2: TextStyle(
-            fontSize: 30, fontFamily: "Roboto", fontWeight: FontWeight.w900),
-        bodyText1: TextStyle(
-            fontSize: 12, fontFamily: "Roboto", fontWeight: FontWeight.w500),
-        bodyText2: TextStyle(
-            fontSize: 12, fontFamily: "Roboto", fontWeight: FontWeight.w300),
-      )),
-      builder: (context, child) {
-        return Scaffold(
-          appBar: AppBar(),
-          body: ForecastCard.fromWeather(
-            weather: Weather(
-                condition: WeatherCondition.fog,
-                description: "",
-                temp: 25.5,
-                feelLikeTemp: 30.1,
-                cloudiness: 0,
-                date: DateTime.now()),
-            locationName: "Sterpeti, Montefelcino",
-            onRefresh: () {},
-          ),
-        );
-      },
-    ),
-  );
 }

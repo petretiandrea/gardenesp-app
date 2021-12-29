@@ -4,10 +4,12 @@ import 'package:gardenesp/model/forecast/forecast.dart';
 import 'package:gardenesp/model/forecast/location.dart';
 import 'package:http/http.dart';
 
+enum WeatherUnit { METRIC, IMPERIAL }
+
 abstract class WeatherApi {
   Future<Location> getLocation(String city);
 
-  Future<Forecast> getWeather(Location location);
+  Future<Forecast> getWeather(Location location, WeatherUnit unit);
 }
 
 class OpenWeatherApi extends WeatherApi {
@@ -20,11 +22,16 @@ class OpenWeatherApi extends WeatherApi {
   }
 
   @override
-  Future<Forecast> getWeather(Location location) async {
-    final requestUrl =
-        '$endpointUrl/onecall?lat=${location.latitude}&lon=${location.longitude}&exclude=hourly,minutely&APPID=$apiKey';
+  Future<Forecast> getWeather(Location location, WeatherUnit unit) async {
+    final requestUri = Uri.https(endpointUrl, "/onecall", {
+      "lat": "${location.latitude}",
+      "lon": "${location.longitude}",
+      "exclude": "hourly,minutely",
+      "units": unit == WeatherUnit.METRIC ? "metric" : "imperial",
+      "APPID": apiKey
+    });
 
-    final response = await this.http.get(Uri.parse(Uri.encodeFull(requestUrl)));
+    final response = await this.http.get(requestUri);
 
     if (response.statusCode != 200) {
       throw Exception('error retrieving weather: ${response.statusCode}');

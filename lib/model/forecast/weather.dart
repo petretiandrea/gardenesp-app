@@ -17,7 +17,7 @@ enum WeatherCondition {
 class Weather {
   final WeatherCondition condition;
   final String description;
-  final double temp;
+  final double temperature;
   final double feelLikeTemp;
   final int cloudiness;
   final DateTime date;
@@ -30,7 +30,7 @@ class Weather {
         condition: mapStringToWeatherCondition(weather['main'], cloudiness),
         description: (weather['description'] as String).toTitleCase(),
         cloudiness: cloudiness,
-        temp: daily['temp']['day'].toDouble(),
+        temperature: daily['temp']['day'].toDouble(),
         date: DateTime.fromMillisecondsSinceEpoch(daily['dt'] * 1000,
             isUtc: true),
         feelLikeTemp: daily['feels_like']['day'].toDouble());
@@ -87,7 +87,7 @@ class Weather {
   const Weather({
     required this.condition,
     required this.description,
-    required this.temp,
+    required this.temperature,
     required this.feelLikeTemp,
     required this.cloudiness,
     required this.date,
@@ -100,7 +100,7 @@ class Weather {
           runtimeType == other.runtimeType &&
           condition == other.condition &&
           description == other.description &&
-          temp == other.temp &&
+          temperature == other.temperature &&
           feelLikeTemp == other.feelLikeTemp &&
           cloudiness == other.cloudiness &&
           date == other.date);
@@ -109,7 +109,7 @@ class Weather {
   int get hashCode =>
       condition.hashCode ^
       description.hashCode ^
-      temp.hashCode ^
+      temperature.hashCode ^
       feelLikeTemp.hashCode ^
       cloudiness.hashCode ^
       date.hashCode;
@@ -119,7 +119,7 @@ class Weather {
     return 'Weather{' +
         ' condition: $condition,' +
         ' description: $description,' +
-        ' temp: $temp,' +
+        ' temp: $temperature,' +
         ' feelLikeTemp: $feelLikeTemp,' +
         ' cloudiness: $cloudiness,' +
         ' date: $date,' +
@@ -137,7 +137,7 @@ class Weather {
     return Weather(
       condition: condition ?? this.condition,
       description: description ?? this.description,
-      temp: temp ?? this.temp,
+      temperature: temp ?? this.temperature,
       feelLikeTemp: feelLikeTemp ?? this.feelLikeTemp,
       cloudiness: cloudiness ?? this.cloudiness,
       date: date ?? this.date,
@@ -148,7 +148,7 @@ class Weather {
     return {
       'condition': this.condition,
       'description': this.description,
-      'temp': this.temp,
+      'temp': this.temperature,
       'feelLikeTemp': this.feelLikeTemp,
       'cloudiness': this.cloudiness,
       'date': this.date,
@@ -159,7 +159,7 @@ class Weather {
     return Weather(
       condition: map['condition'] as WeatherCondition,
       description: map['description'] as String,
-      temp: map['temp'] as double,
+      temperature: map['temp'] as double,
       feelLikeTemp: map['feelLikeTemp'] as double,
       cloudiness: map['cloudiness'] as int,
       date: map['date'] as DateTime,
