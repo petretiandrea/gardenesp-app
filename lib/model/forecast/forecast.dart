@@ -35,10 +35,9 @@ class Forecast {
 
     // get the forecast for the next 3 days, excluding the current day
     bool hasDaily = json['daily'] != null;
-    final tempDaily = (hasDaily)
-        ? json['daily']
+    final IList<Weather> tempDaily = (hasDaily)
+        ? (json['daily'] as List<dynamic>)
             .map((item) => Weather.fromDailyJson(item))
-            .toList()
             .skip(1)
             .take(3)
             .toImmutableList()

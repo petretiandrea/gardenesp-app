@@ -9,6 +9,7 @@ import 'package:gardenesp/repository/user_repository.dart';
 import 'package:gardenesp/routes.dart';
 import 'package:gardenesp/service/weather/weather_service.dart';
 import 'package:gardenesp/ui/dashboard/gardens_list.dart';
+import 'package:gardenesp/ui/forecast/forecast_widget.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({Key? key}) : super(key: key);
@@ -39,8 +40,8 @@ class HomeScreen extends StatelessWidget {
             ),
             BlocProvider(
               create: (ctx) => ForecastCubit(
-                weatherService: ctx.read<WeatherService>(),
-              )..loadForecast("Sterpeti, Montefelcino, PU"),
+                weatherService: ctx.read<WeatherServiceImpl>(),
+              ),
             ),
           ],
           child: _buildGardenList(),
@@ -54,14 +55,19 @@ class HomeScreen extends StatelessWidget {
       builder: (context, state) {
         if (state is ResourceSuccess<List<Garden>>) {
           return RefreshIndicator(
-            child: GardensList(
-              gardens: state.value,
-              onItemSelected: (selectedItem) {
-                Navigator.of(context).pushNamed(
-                    Routes.GARDEN_CREATE_EDIT_SCREEN,
-                    arguments: {'gardenId': selectedItem.identifier});
-                print("Item $selectedItem");
-              },
+            child: Column(
+              children: [
+                ForecastWidget(),
+                GardensList(
+                  gardens: state.value,
+                  onItemSelected: (selectedItem) {
+                    Navigator.of(context).pushNamed(
+                        Routes.GARDEN_CREATE_EDIT_SCREEN,
+                        arguments: {'gardenId': selectedItem.identifier});
+                    print("Item $selectedItem");
+                  },
+                )
+              ],
             ),
             onRefresh: () => context.read<GardenCubit>().loadGardens(),
           );

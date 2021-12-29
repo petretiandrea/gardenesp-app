@@ -13,7 +13,8 @@ class Environment {
 
   Future<void> initialize() async {
     await _dotEnv.load(fileName: secretsPath);
-    await _dotEnv.load(fileName: environmentPath);
+    final secrets = Map.fromEntries(_dotEnv.env.entries);
+    await _dotEnv.load(fileName: environmentPath, mergeWith: secrets);
   }
 
   String getOrElse(String key, String orElse) {

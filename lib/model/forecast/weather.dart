@@ -1,3 +1,5 @@
+import 'package:gardenesp/extensions.dart';
+
 enum WeatherCondition {
   thunderstorm,
   drizzle,
@@ -26,7 +28,7 @@ class Weather {
 
     return Weather(
         condition: mapStringToWeatherCondition(weather['main'], cloudiness),
-        description: weather['description'].toTitleCase(),
+        description: (weather['description'] as String).toTitleCase(),
         cloudiness: cloudiness,
         temp: daily['temp']['day'].toDouble(),
         date: DateTime.fromMillisecondsSinceEpoch(daily['dt'] * 1000,
