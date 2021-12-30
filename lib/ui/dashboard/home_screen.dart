@@ -9,6 +9,7 @@ import 'package:gardenesp/repository/user_repository.dart';
 import 'package:gardenesp/routes.dart';
 import 'package:gardenesp/service/weather/weather_service.dart';
 import 'package:gardenesp/ui/forecast/forecast_widget.dart';
+import 'package:location/location.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({Key? key}) : super(key: key);
@@ -38,8 +39,9 @@ class HomeScreen extends StatelessWidget {
                 ..loadGardens(),
             ),
             BlocProvider(
-              create: (ctx) => ForecastCubit(
-                weatherService: ctx.read<WeatherServiceImpl>(),
+              create: (ctx) => ForecastCubitImpl(
+                weatherService: ctx.read<WeatherRepositoryImpl>(),
+                locationService: Location(),
               ),
             ),
           ],

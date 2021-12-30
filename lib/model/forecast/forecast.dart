@@ -5,7 +5,7 @@ import 'package:gardenesp/model/forecast/weather.dart';
 
 class Forecast {
   final DateTime lastUpdated;
-  final Location location;
+  final LatLng location;
   final IList<Weather> daily;
   final Weather current;
   final bool isDayTime;
@@ -55,7 +55,7 @@ class Forecast {
     return Forecast._(
       lastUpdated: DateTime.now(),
       current: currentForecast,
-      location: Location(
+      location: LatLng(
         latitude: json['lat'].toDouble(),
         longitude: json['lon'].toDouble(),
       ),

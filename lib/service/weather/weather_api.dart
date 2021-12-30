@@ -2,17 +2,18 @@ import 'dart:convert';
 
 import 'package:gardenesp/model/forecast/forecast.dart';
 import 'package:gardenesp/model/forecast/location.dart';
+import 'package:gardenesp/service/geocoding/geocoder.dart';
 import 'package:http/http.dart';
 
 enum WeatherUnit { METRIC, IMPERIAL }
 
 abstract class WeatherApi {
-  Future<Location> getLocation(String city);
+  Future<LatLng> getLocation(String city);
 
-  Future<Forecast> getWeather(Location location, WeatherUnit unit);
+  Future<Forecast> getWeather(LatLng location, WeatherUnit unit);
 }
 
-class OpenWeatherApi extends WeatherApi {
+class OpenWeatherApi extends WeatherApi implements Geocoder {
   final String endpointUrl;
   final String apiKey;
   late final Client http;
@@ -22,8 +23,9 @@ class OpenWeatherApi extends WeatherApi {
   }
 
   @override
-  Future<Forecast> getWeather(Location location, WeatherUnit unit) async {
-    final requestUri = Uri.https(endpointUrl, "/onecall", {
+  Future<Forecast> getWeather(LatLng location, WeatherUnit unit) async {
+    final endpointAuthority = Uri.parse(endpointUrl).authority;
+    final requestUri = Uri.https(endpointAuthority, "/data/2.5/onecall", {
       "lat": "${location.latitude}",
       "lon": "${location.longitude}",
       "exclude": "hourly,minutely",
@@ -41,8 +43,8 @@ class OpenWeatherApi extends WeatherApi {
   }
 
   @override
-  Future<Location> getLocation(String city) async {
-    final requestUrl = '$endpointUrl/weather?q=$city&APPID=$apiKey';
+  Future<LatLng> getLocation(String city) async {
+    final requestUrl = '$endpointUrl/data/2.5/weather?q=$city&APPID=$apiKey';
     final response = await this.http.get(Uri.parse(Uri.encodeFull(requestUrl)));
 
     if (response.statusCode != 200) {
@@ -51,9 +53,31 @@ class OpenWeatherApi extends WeatherApi {
     }
 
     final json = jsonDecode(response.body);
-    return Location(
+    return LatLng(
       longitude: json['coord']['lon'].toDouble(),
       latitude: json['coord']['lat'].toDouble(),
     );
+  }
+
+  @override
+  Future<String> getAddressName(LatLng latLng) async {
+    final endpointAuthority = Uri.parse(endpointUrl).authority;
+    final requestUri = Uri.https(
+      endpointAuthority,
+      "/geo/1.0/reverse",
+      {
+        "lat": latLng.latitude.toString(),
+        "lon": latLng.longitude.toString(),
+        "limit": "1",
+        "appid": apiKey
+      },
+    );
+    final response = await this.http.get(requestUri);
+    final json = jsonDecode(response.body);
+    if (json != null) {
+      final jsonAsList = json as List<dynamic>;
+      return jsonAsList.length > 0 ? jsonAsList[0]["name"] : "";
+    }
+    return "";
   }
 }

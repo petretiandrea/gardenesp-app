@@ -1,13 +1,13 @@
 import 'package:flutter/foundation.dart';
 
 @immutable
-class Location {
+class LatLng {
   final num latitude;
   final num longitude;
 
 //<editor-fold desc="Data Methods">
 
-  const Location({
+  const LatLng({
     required this.latitude,
     required this.longitude,
   });
@@ -15,7 +15,7 @@ class Location {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Location &&
+      (other is LatLng &&
           runtimeType == other.runtimeType &&
           latitude == other.latitude &&
           longitude == other.longitude);
@@ -31,11 +31,11 @@ class Location {
         '}';
   }
 
-  Location copyWith({
+  LatLng copyWith({
     num? latitude,
     num? longitude,
   }) {
-    return Location(
+    return LatLng(
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
     );
@@ -48,8 +48,8 @@ class Location {
     };
   }
 
-  factory Location.fromMap(Map<String, dynamic> map) {
-    return Location(
+  factory LatLng.fromMap(Map<String, dynamic> map) {
+    return LatLng(
       latitude: map['latitude'] as num,
       longitude: map['longitude'] as num,
     );

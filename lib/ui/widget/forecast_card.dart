@@ -52,6 +52,8 @@ class ForecastCard extends StatelessWidget {
   final String dayHour;
   final String weatherCondition;
   final String weatherConditionImage;
+
+  final bool isLoading;
   final void Function() onRefresh;
 
   static const String _FORMAT_DAY_HOUR = "EEE, HH:mm";
@@ -62,12 +64,14 @@ class ForecastCard extends StatelessWidget {
     required this.dayHour,
     required this.weatherCondition,
     required this.weatherConditionImage,
+    required this.isLoading,
     required this.onRefresh,
   });
 
   ForecastCard.fromWeather({
     required Weather weather,
     required this.locationName,
+    required this.isLoading,
     required this.onRefresh,
   })  : degree = weather.temperature,
         weatherCondition = weather.getLocalizedCondition(),
@@ -109,7 +113,9 @@ class ForecastCard extends StatelessWidget {
             color: Colors.white,
           ),
           customBorder: CircleBorder(),
-          onTap: () {},
+          onTap: () {
+            onRefresh();
+          },
         )
       ],
     );

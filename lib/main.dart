@@ -67,7 +67,9 @@ class _GardenspState extends State<Gardensp> {
       providers: [
         RepositoryProvider.value(value: UserRepository()),
         RepositoryProvider.value(value: GardenRepository()),
-        RepositoryProvider.value(value: WeatherServiceImpl(api: weatherApi)),
+        RepositoryProvider.value(
+            value:
+                WeatherRepositoryImpl(api: weatherApi, geocoder: weatherApi)),
       ],
       child: MultiBlocProvider(
         providers: [
