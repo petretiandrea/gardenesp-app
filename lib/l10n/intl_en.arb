@@ -2,5 +2,15 @@
   "@@local": "it_IT",
   "navigation_profile_label": "Profilo",
   "navigation_schedule_label": "Programmazione",
-  "navigation_dashboard_label": "Dashboard"
+  "navigation_dashboard_label": "Dashboard",
+  "weather_condition_thunderstorm": "Thunderstorm",
+  "weather_condition_drizzle": "Light Rain",
+  "weather_condition_rain": "Rain",
+  "weather_condition_snow": "Snow",
+  "weather_condition_mist": "Mist",
+  "weather_condition_fog": "Fog",
+  "weather_condition_light_cloud": "Light cloud",
+  "weather_condition_heavy_cloud": "Cloudy",
+  "weather_condition_clear": "Sunny",
+  "weather_condition_unknown": "Unknown"
 }

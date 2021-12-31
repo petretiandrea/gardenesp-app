@@ -25,13 +25,18 @@ class _ForecastCardState extends State<ForecastCard> {
 
   @override
   void initState() {
-    super.initState();
     context.read<ForecastCubitImpl>().loadForecastByCurrentLocation();
-    _backgroundColor = Theme.of(context).colorScheme.primary;
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
+    _backgroundColor = Theme.of(context).colorScheme.primary;
     return Card(
         elevation: 1,
         shape: RoundedRectangleBorder(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gardenesp/generated/l10n.dart';
 import 'package:gardenesp/model/forecast/weather.dart';
 import 'package:gardenesp/service/weather/weather_api.dart';
 
@@ -43,7 +44,31 @@ extension WeatherUIAdapter on Weather {
   }
 
   String getLocalizedCondition() {
-    return "Cloudy";
+    switch (this.condition) {
+      case WeatherCondition.thunderstorm:
+        return S.current.weather_condition_thunderstorm;
+      case WeatherCondition.drizzle:
+        return S.current.weather_condition_drizzle;
+      case WeatherCondition.rain:
+        return S.current.weather_condition_rain;
+      case WeatherCondition.snow:
+        return S.current.weather_condition_snow;
+      case WeatherCondition.atmosphere:
+        // TODO: to be define a right atmosphere string
+        return S.current.weather_condition_mist;
+      case WeatherCondition.mist:
+        return S.current.weather_condition_mist;
+      case WeatherCondition.fog:
+        return S.current.weather_condition_fog;
+      case WeatherCondition.lightCloud:
+        return S.current.weather_condition_light_cloud;
+      case WeatherCondition.heavyCloud:
+        return S.current.weather_condition_heavy_cloud;
+      case WeatherCondition.clear:
+        return S.current.weather_condition_clear;
+      case WeatherCondition.unknown:
+        return S.current.weather_condition_unknown;
+    }
   }
 
   // begin: Alignment.topLeft,

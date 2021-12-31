@@ -1,6 +1,16 @@
 {
-  "@@local": "it_IT",
+  "@@locale": "it_IT",
   "navigation_profile_label": "Profilo",
   "navigation_schedule_label": "Programmazione",
-  "navigation_dashboard_label": "Dashboard"
+  "navigation_dashboard_label": "Dashboard",
+  "weather_condition_thunderstorm": "Temporale",
+  "weather_condition_drizzle": "Pioggia leggera",
+  "weather_condition_rain": "Pioggia",
+  "weather_condition_snow": "Neve",
+  "weather_condition_mist": "Foschia",
+  "weather_condition_fog": "Nebbia",
+  "weather_condition_light_cloud": "Parzialmente nuvoloso",
+  "weather_condition_heavy_cloud": "Nuvoloso",
+  "weather_condition_clear": "Soleggiato",
+  "weather_condition_unknown": "Sconosciuto"
 }

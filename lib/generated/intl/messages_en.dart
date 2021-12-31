@@ -27,6 +27,22 @@ class MessageLookup extends MessageLookupByLibrary {
         "navigation_profile_label":
             MessageLookupByLibrary.simpleMessage("Profilo"),
         "navigation_schedule_label":
-            MessageLookupByLibrary.simpleMessage("Programmazione")
+            MessageLookupByLibrary.simpleMessage("Programmazione"),
+        "weather_condition_clear":
+            MessageLookupByLibrary.simpleMessage("Sunny"),
+        "weather_condition_drizzle":
+            MessageLookupByLibrary.simpleMessage("Light Rain"),
+        "weather_condition_fog": MessageLookupByLibrary.simpleMessage("Fog"),
+        "weather_condition_heavy_cloud":
+            MessageLookupByLibrary.simpleMessage("Cloudy"),
+        "weather_condition_light_cloud":
+            MessageLookupByLibrary.simpleMessage("Light cloud"),
+        "weather_condition_mist": MessageLookupByLibrary.simpleMessage("Mist"),
+        "weather_condition_rain": MessageLookupByLibrary.simpleMessage("Rain"),
+        "weather_condition_snow": MessageLookupByLibrary.simpleMessage("Snow"),
+        "weather_condition_thunderstorm":
+            MessageLookupByLibrary.simpleMessage("Thunderstorm"),
+        "weather_condition_unknown":
+            MessageLookupByLibrary.simpleMessage("Unknown")
       };
 }

@@ -79,6 +79,106 @@ class S {
       args: [],
     );
   }
+
+  /// `Thunderstorm`
+  String get weather_condition_thunderstorm {
+    return Intl.message(
+      'Thunderstorm',
+      name: 'weather_condition_thunderstorm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Light Rain`
+  String get weather_condition_drizzle {
+    return Intl.message(
+      'Light Rain',
+      name: 'weather_condition_drizzle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rain`
+  String get weather_condition_rain {
+    return Intl.message(
+      'Rain',
+      name: 'weather_condition_rain',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Snow`
+  String get weather_condition_snow {
+    return Intl.message(
+      'Snow',
+      name: 'weather_condition_snow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mist`
+  String get weather_condition_mist {
+    return Intl.message(
+      'Mist',
+      name: 'weather_condition_mist',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fog`
+  String get weather_condition_fog {
+    return Intl.message(
+      'Fog',
+      name: 'weather_condition_fog',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Light cloud`
+  String get weather_condition_light_cloud {
+    return Intl.message(
+      'Light cloud',
+      name: 'weather_condition_light_cloud',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cloudy`
+  String get weather_condition_heavy_cloud {
+    return Intl.message(
+      'Cloudy',
+      name: 'weather_condition_heavy_cloud',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sunny`
+  String get weather_condition_clear {
+    return Intl.message(
+      'Sunny',
+      name: 'weather_condition_clear',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unknown`
+  String get weather_condition_unknown {
+    return Intl.message(
+      'Unknown',
+      name: 'weather_condition_unknown',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
