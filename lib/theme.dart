@@ -9,6 +9,11 @@ class GardenEspTheme {
         fontFamily: "Roboto",
         fontWeight: FontWeight.w900,
       ),
+      headline3: TextStyle(
+        fontSize: 20,
+        fontFamily: "Roboto",
+        fontWeight: FontWeight.w500,
+      ),
       bodyText1: TextStyle(
         fontSize: 16,
         fontFamily: "Roboto",

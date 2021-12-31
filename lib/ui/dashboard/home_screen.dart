@@ -8,7 +8,7 @@ import 'package:gardenesp/repository/garden_repository.dart';
 import 'package:gardenesp/repository/user_repository.dart';
 import 'package:gardenesp/routes.dart';
 import 'package:gardenesp/service/weather/weather_service.dart';
-import 'package:gardenesp/ui/forecast/forecast_widget.dart';
+import 'package:gardenesp/ui/forecast/forecast_card.dart';
 import 'package:location/location.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -58,7 +58,7 @@ class HomeScreen extends StatelessWidget {
           return RefreshIndicator(
             child: Column(
               children: [
-                ForecastWidget(),
+                ForecastCard(),
                 // GardensList(
                 //   gardens: state.value,
                 //   onItemSelected: (selectedItem) {

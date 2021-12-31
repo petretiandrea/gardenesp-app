@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
 extension UserFirebaseExt on User {
   String get name => this.displayName ?? this.email!;
@@ -23,5 +24,17 @@ extension StringExtension on String {
         .join(' ');
 
     return titleCaseVar;
+  }
+}
+
+extension ColorExtension on Color {
+  Color lighten({double amount = 0.5}) {
+    assert(amount >= 0 && amount <= 1);
+
+    final hsl = HSLColor.fromColor(this);
+    final hslLight =
+        hsl.withLightness((hsl.lightness + amount).clamp(0.0, 1.0));
+
+    return hslLight.toColor();
   }
 }

@@ -1,13 +1,14 @@
-import 'package:dartz/dartz.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gardenesp/blocs/forecast/forecast_request.dart';
 import 'package:gardenesp/blocs/forecast/forecast_state.dart';
-import 'package:gardenesp/blocs/resource/resource_cubit.dart';
 import 'package:gardenesp/model/forecast/location.dart';
 import 'package:gardenesp/service/weather/weather_api.dart';
 import 'package:gardenesp/service/weather/weather_service.dart';
 import 'package:location/location.dart';
 
-abstract class ForecastCubit extends ResourceCubit<ForecastState> {
+abstract class ForecastCubit extends Cubit<ForecastState> {
+  ForecastCubit(ForecastState initialState) : super(initialState);
+
   Future<void> loadForecastByCurrentLocation();
 
   Future<void> loadForecast(ForecastRequest request);
@@ -27,7 +28,7 @@ class ForecastCubitImpl extends ForecastCubit {
   ForecastCubitImpl({
     required this.weatherService,
     required this.locationService,
-  });
+  }) : super(ForecastInitial());
 
   @override
   Future<void> changeUnitMeasure(WeatherUnit unit) async {
@@ -70,21 +71,24 @@ class ForecastCubitImpl extends ForecastCubit {
   }
 
   Future<void> _loadForecastByCity(String city, WeatherUnit unit) async {
-    fetchResource(() {
-      return weatherService.getWeather(city, unit).then(
-            (value) => left(ForecastState(forecast: value, unit: unit)),
-            onError: (error) => right(error),
-          );
-    });
+    emit(ForecastLoading());
+    final newState = await weatherService.getWeather(city, unit).then(
+          (value) => ForecastLoaded.fromForecast(
+              forecastWithAddress: value, unit: unit),
+          onError: (error) => ForecastError(),
+        );
+    emit(newState);
   }
 
   Future<void> _loadForecastByLatLng(LatLng latLng, WeatherUnit unit) async {
-    fetchResource(() {
-      return weatherService.getWeatherByLocation(latLng, unit).then(
-            (value) => left(ForecastState(forecast: value, unit: unit)),
-            onError: (error) => right(error),
-          );
-    });
+    emit(ForecastLoading());
+    final newState =
+        await weatherService.getWeatherByLocation(latLng, unit).then(
+              (value) => ForecastLoaded.fromForecast(
+                  forecastWithAddress: value, unit: unit),
+              onError: (error) => ForecastError(),
+            );
+    emit(newState);
   }
 
   Future<LocationData> _requestLocation() async {
