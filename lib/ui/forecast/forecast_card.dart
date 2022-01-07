@@ -1,14 +1,17 @@
-import 'package:flutter/cupertino.dart';
+import 'package:dartz/dartz.dart' as dartz;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gardenesp/blocs/forecast/forecast_cubit.dart';
 import 'package:gardenesp/blocs/forecast/forecast_state.dart';
+import 'package:gardenesp/blocs/resource/resource_cubit.dart';
 import 'package:gardenesp/extensions.dart';
 import 'package:gardenesp/model/forecast/weather.dart';
 import 'package:gardenesp/service/weather/weather_api.dart';
 import 'package:gardenesp/string_extensions.dart';
+import 'package:gardenesp/ui/forecast/forecast_day_widget.dart';
 import 'package:gardenesp/ui/forecast/weather_ui_adapter.dart';
+import 'package:gardenesp/widget/refresh_button.dart';
 import 'package:intl/intl.dart';
 
 class ForecastCard extends StatefulWidget {
@@ -21,8 +24,6 @@ class ForecastCard extends StatefulWidget {
 }
 
 class _ForecastCardState extends State<ForecastCard> {
-  late Color _backgroundColor;
-
   @override
   void initState() {
     context.read<ForecastCubitImpl>().loadForecastByCurrentLocation();
@@ -30,91 +31,119 @@ class _ForecastCardState extends State<ForecastCard> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    _backgroundColor = Theme.of(context).colorScheme.primary;
     return Card(
-        elevation: 1,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              stops: [0.0, 1.0],
-              colors: [
-                _backgroundColor,
-                _backgroundColor.lighten(),
-              ],
-            ),
-          ),
-          child: Padding(
-            padding: EdgeInsets.all(16),
-            child: Container(
-              child: BlocBuilder<ForecastCubitImpl, ForecastState>(
-                builder: (context, state) {
-                  if (state is ForecastLoaded) {
-                    //cardGradient = state.forecast.current.getGradientColor();
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        _weatherRefresh(context),
-                        _weatherHeader(
-                          context,
-                          state.forecast.current,
-                          state.unit,
-                          state.addressName,
-                        ),
-                        SizedBox(
-                          height: 18,
-                        ),
-                        _weatherForecastDays(
-                          context,
-                          state.unit,
-                          state.forecast.daily.toList(),
-                        ),
-                      ],
-                    );
-                  } else {
-                    return Container(
-                      alignment: Alignment.center,
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                },
-              ),
-            ),
-          ),
-        ));
+      clipBehavior: Clip.antiAlias,
+      elevation: 1,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: BlocBuilder<ForecastCubitImpl, ResourceState<ForecastUiData>>(
+        builder: (context, state) {
+          return _buildCard(context, state);
+        },
+      ),
+    );
   }
 
-  Widget _weatherRefresh(BuildContext context) {
+  Widget _buildCard(BuildContext context, ResourceState<ForecastUiData> state) {
+    final dartz.Option<ForecastUiData> currentForecast =
+        state is ResourceLoading<ForecastUiData>
+            ? state.value
+            : (state is ResourceSuccess<ForecastUiData>
+                ? dartz.Some(state.value)
+                : dartz.None());
+
+    final gradient = currentForecast.fold(
+      () => Theme.of(context).colorScheme.primary,
+      (loadedState) => loadedState.forecast.current.getGradientColor(),
+    );
+
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          stops: [0.0, 1.0],
+          colors: [
+            gradient,
+            gradient.lighten(),
+          ],
+        ),
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.bottomCenter,
+            end: Alignment.topCenter,
+            colors: [Colors.black, Colors.transparent],
+            stops: [0.0, 2.0],
+          ),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Container(
+            child: _buildCardContent(state),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCardContent(ResourceState<ForecastUiData> state) {
+    if (state is ResourceSuccess<ForecastUiData>) {
+      return _buildCardLoadedWeather(state.value, false);
+    } else if (state is ResourceLoading<ForecastUiData> &&
+        state.value.isSome()) {
+      return _buildCardLoadedWeather(state.value.toNullable()!, true);
+    } else {
+      return Container(
+        alignment: Alignment.center,
+        height: 216,
+        child: CircularProgressIndicator(),
+      );
+    }
+  }
+
+  Widget _buildCardLoadedWeather(
+    ForecastUiData data,
+    bool isBackgroundLoading,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _weatherRefresh(context, isBackgroundLoading),
+        _weatherHeader(
+          context,
+          data.forecast.current,
+          data.unit,
+          data.addressName,
+        ),
+        SizedBox(
+          height: 18,
+        ),
+        _weatherForecastDays(
+          context,
+          data.unit,
+          data.forecast.daily.toList(),
+        ),
+      ],
+    );
+  }
+
+  Widget _weatherRefresh(BuildContext context, bool isLoading) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        InkWell(
-          child: Padding(
-            padding: EdgeInsets.all(8),
-            child: Icon(
-              Icons.sync,
-              size: 15,
-              color: Colors.white,
-            ),
-          ),
-          customBorder: CircleBorder(),
-          onTap: () {
+        RefreshButton(
+          isLoading: isLoading,
+          onClick: () {
             context.read<ForecastCubitImpl>().refresh();
           },
-        )
+        ),
       ],
     );
   }
@@ -164,65 +193,16 @@ class _ForecastCardState extends State<ForecastCard> {
   }
 
   Widget _weatherForecastDays(
-      BuildContext context, WeatherUnit unit, List<Weather> weathers) {
+    BuildContext context,
+    WeatherUnit unit,
+    List<Weather> weathers,
+  ) {
     return Wrap(
       direction: Axis.horizontal,
       alignment: WrapAlignment.spaceAround,
       children: [
         ...weathers
             .map((weatherDay) => ForecastDay.fromWeather(weatherDay, unit))
-      ],
-    );
-    // return Row(
-    //   mainAxisAlignment: MainAxisAlignment.center,
-    //   children: [
-    //     ...weathers.map((weatherDay) => ForecastDay(
-    //           day: "Mar",
-    //           weatherConditionImage: weatherDay.getConditionImage(),
-    //           temperature: weatherDay.temperature,
-    //         ))
-    //   ],
-    // );
-  }
-}
-
-class ForecastDay extends StatelessWidget {
-  final String day;
-  final String weatherConditionImage;
-  final String temperature;
-
-  static const String _FORMAT_DAY = "EEE";
-
-  const ForecastDay({
-    required this.day,
-    required this.weatherConditionImage,
-    required this.temperature,
-  });
-
-  ForecastDay.fromWeather(Weather weather, WeatherUnit unit)
-      : day = DateFormat(_FORMAT_DAY).format(weather.date).capitalize(),
-        weatherConditionImage = weather.getConditionImage(),
-        temperature = weather.getFormattedTemperature(unit);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text(
-          day,
-          style: Theme.of(context).textTheme.headline3,
-        ),
-        SvgPicture.asset(
-          weatherConditionImage,
-          width: 36,
-        ),
-        Text(
-          temperature,
-          style: Theme.of(context).textTheme.bodyText2,
-        )
       ],
     );
   }

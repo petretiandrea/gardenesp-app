@@ -11,7 +11,7 @@ abstract class ResourceCubit<S> extends Cubit<ResourceState<S>> {
 
   void fetchResource(FetchFunction<S> fetch) async {
     try {
-      emit(ResourceLoading());
+      emit(ResourceLoading(null));
       final result = await fetch();
       final newState = result.fold<ResourceState<S>>(
           (l) => ResourceSuccess<S>(l), (r) => ResourceError<S>(r));

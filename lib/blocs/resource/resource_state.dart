@@ -9,7 +9,11 @@ abstract class ResourceState<T> {
 
 class ResourceInitial<T> extends ResourceState<T> {}
 
-class ResourceLoading<T> extends ResourceState<T> {}
+class ResourceLoading<T> extends ResourceState<T> {
+  final Option<T> value;
+
+  ResourceLoading(T? value) : this.value = value != null ? Some(value) : None();
+}
 
 class ResourceError<T> extends ResourceState<T> {
   final String error;
