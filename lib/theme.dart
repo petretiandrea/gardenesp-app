@@ -24,6 +24,16 @@ class GardenEspTheme {
         fontFamily: "Roboto",
         fontWeight: FontWeight.w300,
       ),
+      subtitle1: TextStyle(
+        fontSize: 11,
+        fontFamily: "Roboto",
+        fontWeight: FontWeight.w300,
+      ),
+      headline5: TextStyle(
+        fontSize: 10,
+        fontFamily: "Roboto",
+        fontWeight: FontWeight.w400,
+      ),
     );
 
     return baseTheme.copyWith(
