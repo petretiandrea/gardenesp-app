@@ -20,8 +20,12 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'it_IT';
 
+  static String m0(sectors, poi) =>
+      "${Intl.plural(sectors, one: '1 settore', other: '${sectors} settori')} - ${poi} PoI";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "garden_card_sectors_poi": m0,
         "navigation_dashboard_label":
             MessageLookupByLibrary.simpleMessage("Dashboard"),
         "navigation_profile_label":

@@ -179,6 +179,16 @@ class S {
       args: [],
     );
   }
+
+  /// `{sectors, plural, =1{1 sector} other{{sectors} sectors}} - {poi} PoI`
+  String garden_card_sectors_poi(num sectors, Object poi) {
+    return Intl.message(
+      '${Intl.plural(sectors, one: '1 sector', other: '$sectors sectors')} - $poi PoI',
+      name: 'garden_card_sectors_poi',
+      desc: '',
+      args: [sectors, poi],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

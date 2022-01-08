@@ -12,5 +12,6 @@
   "weather_condition_light_cloud": "Light cloud",
   "weather_condition_heavy_cloud": "Cloudy",
   "weather_condition_clear": "Sunny",
-  "weather_condition_unknown": "Unknown"
+  "weather_condition_unknown": "Unknown",
+  "garden_card_sectors_poi": "{sectors, plural, =1{1 sector} other{{sectors} sectors}} - {poi} PoI"
 }

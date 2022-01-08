@@ -1,6 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:gardenesp/generated/l10n.dart';
 import 'package:gardenesp/test/preview.dart';
+
+abstract class GardenCardUiData {
+  abstract final num sectors;
+  abstract final num pointOfIrrigation;
+  abstract final num humidity;
+  abstract final String name;
+  abstract final DateTime startTime;
+}
 
 class GardenCard extends StatelessWidget {
   @override
@@ -35,8 +44,13 @@ class GardenCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildContentTop(context),
-                _buildContentBottom(context),
+                _buildContentTop(context, sectors: 2, poi: 20),
+                _buildContentBottom(
+                  context,
+                  gardenName: "Main Garden",
+                  activeSectors: 2,
+                  activeDuration: Duration(minutes: 5),
+                ),
               ],
             ),
           ),
@@ -45,7 +59,12 @@ class GardenCard extends StatelessWidget {
     );
   }
 
-  Widget _buildContentTop(BuildContext context) {
+  Widget _buildContentTop(
+    BuildContext context, {
+    required num sectors,
+    required num poi,
+    num? humidity,
+  }) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,7 +74,7 @@ class GardenCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(
-              "2 sectors - 20 PoI",
+              S.current.garden_card_sectors_poi(sectors, poi),
               style: Theme.of(context).textTheme.headline5,
             ),
             SizedBox(height: 4),
@@ -69,7 +88,7 @@ class GardenCard extends StatelessWidget {
                 ),
                 SizedBox(width: 4),
                 Text(
-                  "-- %",
+                  "${humidity?.toStringAsFixed(1) ?? "--"} %",
                   style: Theme.of(context).textTheme.headline5,
                 ),
               ],
@@ -80,12 +99,17 @@ class GardenCard extends StatelessWidget {
     );
   }
 
-  Widget _buildContentBottom(BuildContext context) {
+  Widget _buildContentBottom(
+    BuildContext context, {
+    required String gardenName,
+    required num activeSectors,
+    required Duration activeDuration,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Main Garden",
+          gardenName,
           style: Theme.of(context).textTheme.bodyText1,
         ),
         Text(

@@ -63,7 +63,7 @@ class Weather {
       case 'Mist':
         condition = WeatherCondition.mist;
         break;
-      case 'fog':
+      case 'Fog':
         condition = WeatherCondition.fog;
         break;
       case 'Smoke':
