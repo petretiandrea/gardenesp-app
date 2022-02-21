@@ -6,14 +6,14 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:gardenesp/blocs/authentication/authentication_bloc.dart';
 import 'package:gardenesp/blocs/login/login_form_cubit.dart';
 import 'package:gardenesp/environment/environment.dart';
-import 'package:gardenesp/environment/environment_extension.dart';
 import 'package:gardenesp/generated/l10n.dart';
 import 'package:gardenesp/repository/garden_repository.dart';
 import 'package:gardenesp/repository/user_repository.dart';
 import 'package:gardenesp/routes.dart';
-import 'package:gardenesp/service/weather/weather_api.dart';
 import 'package:gardenesp/service/weather/weather_service.dart';
 import 'package:gardenesp/theme.dart';
+
+import 'di/di.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,25 +28,20 @@ class Gardensp extends StatefulWidget {
 }
 
 class _GardenspState extends State<Gardensp> {
-  final Environment _environment = Environment(
-    environmentPath: "default.env",
-    secretsPath: "real_secrets.env",
-  );
-
-  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
+  final Future<void> _initialization = Firebase.initializeApp();
 
   _GardenspState();
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: _initialization.then((value) => _environment.initialize()),
+      future: _initialization.then((value) => initializeDependencyInjection()),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Container(child: Text("Error: ${snapshot.error.toString()}"));
         }
         if (snapshot.connectionState == ConnectionState.done) {
-          return _buildApp(_environment);
+          return _buildApp(inject<Environment>());
         }
         return Container(child: CircularProgressIndicator());
       },
@@ -58,18 +53,11 @@ class _GardenspState extends State<Gardensp> {
   NavigatorState get _navigator => _navigatorKey.currentState!;
 
   Widget _buildApp(Environment environment) {
-    final OpenWeatherApi weatherApi = OpenWeatherApi(
-      endpointUrl: environment.openWeatherUrl,
-      apiKey: environment.openWeatherKey,
-    );
-
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider.value(value: UserRepository()),
-        RepositoryProvider.value(value: GardenRepository()),
-        RepositoryProvider.value(
-            value:
-                WeatherRepositoryImpl(api: weatherApi, geocoder: weatherApi)),
+        RepositoryProvider.value(value: inject<UserRepository>()),
+        RepositoryProvider.value(value: inject<GardenRepository>()),
+        RepositoryProvider.value(value: inject<WeatherRepositoryImpl>()),
       ],
       child: MultiBlocProvider(
         providers: [
