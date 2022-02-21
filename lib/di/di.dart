@@ -1,8 +1,11 @@
+import 'package:dio/dio.dart';
 import 'package:gardenesp/environment/environment.dart';
 import 'package:gardenesp/environment/environment_extension.dart';
 import 'package:gardenesp/repository/garden_repository.dart';
 import 'package:gardenesp/repository/user_repository.dart';
 import 'package:gardenesp/service/geocoding/geocoder.dart';
+import 'package:gardenesp/service/weather/impl/retrofit_openweather_api.dart';
+import 'package:gardenesp/service/weather/impl/retrofit_openweather_client.dart';
 import 'package:gardenesp/service/weather/weather_api.dart';
 import 'package:gardenesp/service/weather/weather_service.dart';
 import 'package:get_it/get_it.dart';
@@ -19,9 +22,12 @@ Future<void> initializeDependencyInjection() async {
   inject.registerSingleton(environment);
 
   // services
-  final weather = OpenWeatherApi(
-    endpointUrl: inject<Environment>().openWeatherUrl,
-    apiKey: inject<Environment>().openWeatherKey,
+  final weather = RetrofitOpenWeatherApi(
+    OpenWeatherRetrofitClient(
+      Dio(),
+      baseUrl: inject<Environment>().openWeatherUrl,
+      apiKey: inject<Environment>().openWeatherKey,
+    ),
   );
   inject.registerSingleton<WeatherApi>(weather);
   inject.registerSingleton<Geocoder>(weather);
